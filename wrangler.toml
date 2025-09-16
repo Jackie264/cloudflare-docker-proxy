@@ -2,21 +2,31 @@ name = "cloudflare-docker-proxy"
 main = "src/index.js"
 compatibility_date = "2023-12-01"
 
+# 顶层默认变量（如果不指定环境，就会用这里的）
+[vars]
+CUSTOM_DOMAIN = "libcuda.so"
+MODE = "production"
+TARGET_UPSTREAM = ""
+
 [dev]
 ip = "0.0.0.0"
 port = 8787
 local_protocol = "http"
 
-[env.vars]
-CUSTOM_DOMAIN = "libcuda.so"
+# 开发环境
+[env.dev]
+name = "cloudflare-docker-proxy-dev"
 
 [env.dev.vars]
 MODE = "debug"
 TARGET_UPSTREAM = "https://registry-1.docker.io"
-CUSTOM_DOMAIN = "exmaple.com"
+CUSTOM_DOMAIN = "example.com"
 
+# 生产环境
 [env.production]
 name = "cloudflare-docker-proxy"
+
+# 可以在这里配置 routes，如果你要绑定多个自定义域名
 # routes = [
 #   { pattern = "docker.libcuda.so", custom_domain = true },
 #   { pattern = "quay.libcuda.so", custom_domain = true },
@@ -25,16 +35,21 @@ name = "cloudflare-docker-proxy"
 #   { pattern = "k8s.libcuda.so", custom_domain = true },
 #   { pattern = "ghcr.libcuda.so", custom_domain = true },
 #   { pattern = "cloudsmith.libcuda.so", custom_domain = true },
+#   { pattern = "ecr.libcuda.so", custom_domain = true },
 # ]
 
 [env.production.vars]
 MODE = "production"
 TARGET_UPSTREAM = ""
+CUSTOM_DOMAIN = "libcuda.so"
 
+# 测试环境
 [env.staging]
 name = "cloudflare-docker-proxy-staging"
+
 # route = { pattern = "docker-staging.libcuda.so", custom_domain = true }
 
 [env.staging.vars]
 MODE = "staging"
 TARGET_UPSTREAM = ""
+CUSTOM_DOMAIN = "staging.libcuda.so"
