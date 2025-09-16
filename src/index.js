@@ -79,7 +79,7 @@ async function handleRequest(request, env) {
         scope = scopeParts.join(":");
       }
     }
-    return await fetchToken(wwwAuthenticate, scope, authorization);
+    return await fetchToken(wwwAuthenticate, scope, authorization, env);
   }
 
   if (isDockerHub) {
@@ -119,13 +119,24 @@ function parseAuthenticate(authenticateStr) {
   return { realm: matches[0], service: matches[1] };
 }
 
-async function fetchToken(wwwAuthenticate, scope, authorization) {
+async function fetchToken(wwwAuthenticate, scope, authorization, env) {
   const url = new URL(wwwAuthenticate.realm);
-  if (wwwAuthenticate.service.length) url.searchParams.set("service", wwwAuthenticate.service);
-  if (scope) url.searchParams.set("scope", scope);
+  if (wwwAuthenticate.service.length) {
+    url.searchParams.set("service", wwwAuthenticate.service);
+  }
+  if (scope) {
+    url.searchParams.set("scope", scope);
+  }
 
   const headers = new Headers();
-  if (authorization) headers.set("Authorization", authorization);
+  if (authorization) {
+    // 如果客户端自己带了 Authorization，就直接用
+    headers.set("Authorization", authorization);
+  } else if (env.DOCKER_USERNAME && env.DOCKER_PASSWORD) {
+    // 否则 Worker 自动注入 Basic Auth
+    const basicAuth = btoa(`${env.DOCKER_USERNAME}:${env.DOCKER_PASSWORD}`);
+    headers.set("Authorization", `Basic ${basicAuth}`);
+  }
 
   return await fetch(url, { method: "GET", headers });
 }
