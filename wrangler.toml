@@ -1,3 +1,7 @@
+# wrangler.toml (wrangler v3.88.0^)
+[observability.logs]
+enabled = true
+
 name = "cloudflare-docker-proxy"
 main = "src/index.js"
 compatibility_date = "2023-12-01"
