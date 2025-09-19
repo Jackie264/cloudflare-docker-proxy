@@ -13,8 +13,8 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment: production
     name: Build & Deploy
+    environment: production
     steps:
       - uses: actions/checkout@v5
       
@@ -28,4 +28,6 @@ jobs:
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
           vars: |
             CUSTOM_DOMAIN=${{ secrets.CUSTOM_DOMAIN }}
+            DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+            DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }}
           command: deploy --env production
