@@ -26,6 +26,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          environment: production
           vars: |
             CUSTOM_DOMAIN=${{ secrets.CUSTOM_DOMAIN }}
             DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
