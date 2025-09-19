@@ -31,8 +31,8 @@ jobs:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
           environment: production   # 👈 这里是 wrangler 的 environment
-          vars: |   # 👈 再把 runner 环境变量传给 wrangler
-            CUSTOM_DOMAIN=$CUSTOM_DOMAIN
-            DOCKER_USERNAME=$DOCKER_USERNAME
-            DOCKER_PASSWORD=$DOCKER_PASSWORD
+          #vars: |   # 👈 再把 runner 环境变量传给 wrangler
+          #  CUSTOM_DOMAIN=$CUSTOM_DOMAIN
+          #  DOCKER_USERNAME=$DOCKER_USERNAME
+          #  DOCKER_PASSWORD=$DOCKER_PASSWORD
           command: deploy --env production
