@@ -17,7 +17,12 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@v5
-      
+
+      - name: Debug secrets
+        run: echo "CUSTOM_DOMAIN length=${#CUSTOM_DOMAIN}"
+        env:
+          CUSTOM_DOMAIN: ${{ secrets.CUSTOM_DOMAIN }}
+          
       - name: Install dependencies
         run: npm ci
         
