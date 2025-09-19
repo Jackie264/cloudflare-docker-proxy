@@ -4,7 +4,7 @@ compatibility_date = "2023-12-01"
 
 # 顶层默认变量（如果不指定环境，就会用这里的）
 [vars]
-CUSTOM_DOMAIN = "libcuda.so"
+# CUSTOM_DOMAIN = "libcuda.so"
 MODE = "production"
 TARGET_UPSTREAM = ""
 
