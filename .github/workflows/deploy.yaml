@@ -1,4 +1,6 @@
 name: Deploy to Cloudflare Workers
+permissions:
+  contents: read
 
 on:
   push:
