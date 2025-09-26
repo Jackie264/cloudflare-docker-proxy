@@ -7,7 +7,7 @@
   "dependencies": {},
   "devDependencies": {
     "prettier": "^3.6.2",
-    "webpack": "^5.65.0",
+    "webpack": "^5.101.3",
     "webpack-cli": "^5.1.4",
     "wrangler": "^3.36.0"
   },
