@@ -15,8 +15,11 @@ jobs:
     runs-on: ubuntu-latest
     name: Build & Deploy
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v5          
       - name: Publish
+        with:
+          command: npm install --save-dev wrangler@4
+
         uses: cloudflare/wrangler-action@v4
         env:
           CUSTOM_DOMAIN: ${{ secrets.CUSTOM_DOMAIN || 'libcuda.so' }}
