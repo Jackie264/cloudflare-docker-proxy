@@ -17,7 +17,7 @@ CUSTOM_DOMAIN = "libcuda.so"
 
 [env.production]
 name = "cloudflare-docker-proxy"
-routes = [
+# routes = [
 #   { pattern = "docker.libcuda.so", custom_domain = true },
 #   { pattern = "quay.libcuda.so", custom_domain = true },
 #   { pattern = "gcr.libcuda.so", custom_domain = true },
