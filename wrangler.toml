@@ -30,7 +30,7 @@ name = "cloudflare-docker-proxy"
 [env.production.vars]
 MODE = "production"
 TARGET_UPSTREAM = ""
-CUSTOM_DOMAIN = env.CUSTOM_DOMAIN
+CUSTOM_DOMAIN = ${{ secrets.CUSTOM_DOMAIN }}
 
 [env.staging]
 name = "cloudflare-docker-proxy-staging"
