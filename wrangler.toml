@@ -1,6 +1,6 @@
 name = "cloudflare-docker-proxy"
 main = "src/index.js"
-compatibility_date = "2023-12-01"
+compatibility_date = "2025-10-01"
 
 [dev]
 ip = "0.0.0.0"
