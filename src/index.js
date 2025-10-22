@@ -41,7 +41,13 @@ async function handleRequest(request, env) {
   }
 
   const isDockerHub = upstream === dockerHub;
-  const authorization = request.headers.get("Authorization");
+  let authorization = request.headers.get("Authorization");
+
+  // 如果目标是 Docker Hub 且客户端没带认证，就用 Secret 注入
+  if (isDockerHub && !authorization && env.DOCKER_USERNAME && env.DOCKER_PASSWORD) {
+    const basicAuth = btoa(`${env.DOCKER_USERNAME}:${env.DOCKER_PASSWORD}`);
+    authorization = `Basic ${basicAuth}`;
+  }
 
   // /v2/ endpoint
   if (url.pathname === "/v2/") {
@@ -90,9 +96,13 @@ async function handleRequest(request, env) {
 
   // forward requests
   const newUrl = new URL(upstream + url.pathname);
+  const headers = new Headers(request.headers);
+  if (authorization) headers.set("Authorization", authorization);
+
   const newReq = new Request(newUrl, {
     method: request.method,
-    headers: request.headers,
+    headers,
+    body: request.body,
     redirect: isDockerHub ? "manual" : "follow",
   });
 
