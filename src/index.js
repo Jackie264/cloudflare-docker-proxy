@@ -28,8 +28,20 @@ function routeByHosts(host, routes, env) {
 }
 
 async function handleRequest(request, env) {
-  const routes = buildRoutes(env);
   const url = new URL(request.url);
+
+  // --- 🚀 新增 IP 校验逻辑 START ---
+    const clientIP = request.headers.get("cf-connecting-ip");
+    const allowedIPs = env.ALLOWED_IPS ? env.ALLOWED_IPS.split(",").map(ip => ip.trim()) : [];
+
+    // 如果 ALLOWED_IPS 环境变量不为空，则进行 IP 检查
+    if (allowedIPs.length > 0 && !allowedIPs.includes(clientIP)) {
+        console.log(`Blocked unauthorized access from IP: ${clientIP}`);
+        return new Response(JSON.stringify({ message: "Access Denied: Unauthorized IP Address" }), { status: 403 });
+    }
+    // --- 🚀 新增 IP 校验逻辑 END ---
+  
+  const routes = buildRoutes(env);
 
   if (url.pathname === "/") {
     return Response.redirect(url.protocol + "//" + url.host + "/v2/", 301);
