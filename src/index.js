@@ -39,15 +39,11 @@ async function handleRequest(request, env) {
   // 新增：如果不是白名单IP，且访问的是根路径或 /v2/，返回 404/403 混淆
     if (!isAllowed) {
         if (url.pathname === "/" || url.pathname === "/v2/") {
-            // 返回一个模糊的 404 而不是 403，避免暴露安全策略
             return new Response(JSON.stringify({ message: "Not Found" }), { status: 404 });
         }
-        // 如果访问的是其他路径（如 /v2/images...），直接拒绝
         console.log(`Blocked unauthorized access from IP: ${clientIP}`);
         return new Response(JSON.stringify({ message: "Forbidden" }), { status: 403 });
     }
-    
-    // 白名单IP的请求进入正常逻辑
   
   const routes = buildRoutes(env);
 
