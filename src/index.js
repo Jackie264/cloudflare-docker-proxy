@@ -1,9 +1,12 @@
 const dockerHub = "https://registry-1.docker.io";
 
 function buildRoutes(env) {
+  if (!env.SECRET_DOCKER_HOST) {
+        return {}; 
+    }
   return {
     // production
-    ["docker." + env.CUSTOM_DOMAIN]: dockerHub,
+    [env.SECRET_DOCKER_HOST + "." + env.CUSTOM_DOMAIN]: dockerHub,
     ["quay." + env.CUSTOM_DOMAIN]: "https://quay.io",
     ["gcr." + env.CUSTOM_DOMAIN]: "https://gcr.io",
     ["k8s-gcr." + env.CUSTOM_DOMAIN]: "https://k8s.gcr.io",
@@ -29,17 +32,22 @@ function routeByHosts(host, routes, env) {
 
 async function handleRequest(request, env) {
   const url = new URL(request.url);
+  const clientIP = request.headers.get("cf-connecting-ip");
+  const allowedIPs = env.ALLOWED_IPS ? env.ALLOWED_IPS.split(",").map(ip => ip.trim()) : [];
+  const isAllowed = allowedIPs.length > 0 && allowedIPs.includes(clientIP);
 
-  // --- 🚀 新增 IP 校验逻辑 START ---
-    const clientIP = request.headers.get("cf-connecting-ip");
-    const allowedIPs = env.ALLOWED_IPS ? env.ALLOWED_IPS.split(",").map(ip => ip.trim()) : [];
-
-    // 如果 ALLOWED_IPS 环境变量不为空，则进行 IP 检查
-    if (allowedIPs.length > 0 && !allowedIPs.includes(clientIP)) {
-        console.log(`Blocked unauthorized access from IP: ${clientIP}`);
-        return new Response(JSON.stringify({ message: "Access Denied: Unauthorized IP Address" }), { status: 403 });
-    }
-    // --- 🚀 新增 IP 校验逻辑 END ---
+  // 新增：如果不是白名单IP，且访问的是根路径或 /v2/，返回 404/403 混淆
+    if (!isAllowed) {
+        if (url.pathname === "/" || url.pathname === "/v2/") {
+            // 返回一个模糊的 404 而不是 403，避免暴露安全策略
+            return new Response(JSON.stringify({ message: "Not Found" }), { status: 404 });
+        }
+        // 如果访问的是其他路径（如 /v2/images...），直接拒绝
+        console.log(`Blocked unauthorized access from IP: ${clientIP}`);
+        return new Response(JSON.stringify({ message: "Forbidden" }), { status: 403 });
+    }
+    
+    // 白名单IP的请求进入正常逻辑
   
   const routes = buildRoutes(env);
 
