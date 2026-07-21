@@ -6,7 +6,7 @@
   "author": "ciiiii <allen.cccccnm@gmail.com>",
   "dependencies": {},
   "devDependencies": {
-    "prettier": "^3.9.5",
+    "prettier": "^3.9.6",
     "webpack": "^5.108.4",
     "webpack-cli": "^7.2.1",
     "wrangler": "^4.112.0"
